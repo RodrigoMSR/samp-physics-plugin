@@ -53,13 +53,13 @@ void CObject::setWorld(int world)
     m_World = world;
 }
 
-void CObject::applyRotation(float speed, float moveangle)
+void CObject::applyRotation(float speed, float moveangle, int updateInterval)
 {
 	float rx, ry, rz;
 
 	Streamer::GetDynamicObjectRot(m_DynObject, rx, ry, rz);
 
-	rx -= speed * (PHY_TIMER_INTERVAL/1000.0) * (180.0/3.14159) / m_Size;
+	rx -= speed * (updateInterval/1000.0) * (180.0/3.14159) / m_Size;
 
 	if(rx < 0.0) rx += 360.0;
 
@@ -69,7 +69,7 @@ void CObject::applyRotation(float speed, float moveangle)
 }
 
 /* New mode of rolling, based on Quaternions */
-void CObject::applyQuaternionsRotation(float speed, float moveangle)
+void CObject::applyQuaternionsRotation(float speed, float moveangle, int updateInterval)
 {
 	float rx, ry, rz, dx, dy, q_roll[4], vx, vy, vz, quat[4];
 	
@@ -77,7 +77,7 @@ void CObject::applyQuaternionsRotation(float speed, float moveangle)
 	dy = cos_degrees(-moveangle);
 
 	PHY_vectorcrossp(dx, dy, 0.0, 0.0, 0.0, 1.0, vx, vy, vz);
-	PHY_QuatFromAxisAngle(vx, vy, vz, speed * (PHY_TIMER_INTERVAL/1000.0) * (180.0/3.14159) / m_Size, q_roll[0], q_roll[1], q_roll[2], q_roll[3]);
+	PHY_QuatFromAxisAngle(vx, vy, vz, (speed * (updateInterval/1000.0) * (180.0/3.14159)) / m_Size, q_roll[0], q_roll[1], q_roll[2], q_roll[3]);
 	
 	quat[0] = m_QW;
 	quat[1] = m_QX;

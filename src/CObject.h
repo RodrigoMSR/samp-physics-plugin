@@ -39,8 +39,8 @@ public:
     CObject();
     CObject(int objectid, int modelid, float mass, float size, int mode);
     void setWorld(int world);
-    void applyRotation(float speed, float moveangle);
-    void applyQuaternionsRotation(float speed, float moveangle);
+    void applyRotation(float speed, float moveangle, int updateInterval);
+    void applyQuaternionsRotation(float speed, float moveangle, int updateInterval);
     float getMoveAngle();
     void toggleRolling(bool toggle, int rollingmode);
     bool isMoving();

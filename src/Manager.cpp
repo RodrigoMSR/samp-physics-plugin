@@ -378,9 +378,9 @@ void Manager::update()
             if(a->isRolling() && speed > 0.0)
             {
                 if(a->isRollingModeAdvanced())
-                    a->applyQuaternionsRotation(speed, moveangle);
+                    a->applyQuaternionsRotation(speed, moveangle, m_UpdateInterval);
                 else
-                    a->applyRotation(speed, moveangle);
+                    a->applyRotation(speed, moveangle, m_UpdateInterval);
             }
         }
         
