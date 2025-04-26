@@ -30,4 +30,10 @@ namespace Natives
     cell AMX_NATIVE_CALL PHY_SetObjectGravity(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_SetObjectAcceleration(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_GetObjectAcceleration(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_ToggleObjectPlayerColls(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_CreateCylinder(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_DestroyCylinder(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_SetCylinderWorld(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_GetObjectSpeed(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_SetPlayerWorld(AMX* amx, cell* params);
 }

@@ -5,3 +5,5 @@ EXPORTS
 	AmxLoad
 	AmxUnload
 	ProcessTick
+	OnPlayerConnect
+	OnPlayerDisconnect

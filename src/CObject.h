@@ -53,4 +53,5 @@ public:
     bool isCollidingWithPlayers();
     bool isRolling();
     bool isRollingModeAdvanced();
+    float getSpeed(bool _3D = true);
 };

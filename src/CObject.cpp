@@ -2,6 +2,7 @@
 #include "util.h"
 #include "streamer.h"
 #include "model_sizes.h"
+#include <cmath>
 
 CObject::CObject(int objectid, int modelid, float mass, float size, int mode)
 {
@@ -171,4 +172,13 @@ bool CObject::isRolling()
 bool CObject::isRollingModeAdvanced()
 {
     return (m_Properties & PHY_OBJECT_ROLLING_MODE);
+}
+
+float CObject::getSpeed(bool _3D)
+{
+    return sqrt(
+		m_VX * m_VX +
+		m_VY * m_VY +
+		_3D ? (m_VZ * m_VZ) : 0.0
+	);
 }

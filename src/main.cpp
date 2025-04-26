@@ -6,9 +6,6 @@
 #define PLUGIN_NAME "Physics"
 #define PLUGIN_VERSION "1.0"
 
-//#include "../SDK/amxplugin.cpp"
-//#include "../SDK/sampgdk.c"
-
 extern void *pAMXFunctions;
 
 std::unordered_set<AMX*>* g_Interfaces = NULL;
@@ -37,6 +34,24 @@ PLUGIN_EXPORT void PLUGIN_CALL ProcessTick()
 		tickTime = GetTickCount();
 		tickCount = 0;
 	}*/
+}
+
+PLUGIN_EXPORT bool PLUGIN_CALL OnPlayerConnect(int playerid)
+{
+	if(playerid >= 0 && playerid < MAX_PLAYERS)
+	{
+		if(g_Manager != NULL)
+			g_Manager->addPlayer(playerid);
+	}
+	return true;
+}
+
+PLUGIN_EXPORT bool PLUGIN_CALL OnPlayerDisconnect(int playerid, int reason)
+{
+	if(g_Manager != NULL)
+		g_Manager->deletePlayer(playerid);
+	
+	return true;
 }
 
 //--- Plugin Load / Unload
@@ -90,7 +105,13 @@ AMX_NATIVE_INFO PluginNatives[] =
 	{"PHY_SetObjectGravity", Natives::PHY_SetObjectGravity},
 	{"PHY_SetObjectAcceleration", Natives::PHY_SetObjectAcceleration},
 	{"PHY_GetObjectAcceleration", Natives::PHY_GetObjectAcceleration},
-	
+	{"PHY_ToggleObjectPlayerColls", Natives::PHY_ToggleObjectPlayerColls},
+	{"PHY_CreateCylinder", Natives::PHY_CreateCylinder},
+	{"PHY_DestroyCylinder", Natives::PHY_DestroyCylinder},
+	{"PHY_SetCylinderWorld", Natives::PHY_SetCylinderWorld},
+	{"PHY_GetObjectSpeed", Natives::PHY_GetObjectSpeed},
+	{"PHY_SetPlayerWorld", Natives::PHY_SetPlayerWorld},
+
 	{0, 0}
 };
 

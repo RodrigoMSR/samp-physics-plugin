@@ -50,7 +50,7 @@ cell AMX_NATIVE_CALL Natives::PHY_DeleteObject(AMX* amx, cell* params)
 
     int objectid = (int) params[1];
 
-    g_Manager->deleteObject(objectid);
+    g_Manager->deleteItem(PHY_ITEM_OBJECT, objectid);
     return 1;
 }
 
@@ -61,7 +61,7 @@ cell AMX_NATIVE_CALL Natives::PHY_DestroyWall(AMX* amx, cell* params)
 
     int wallid = (int) params[1];
 
-    g_Manager->deleteWall(wallid);
+    g_Manager->deleteItem(PHY_ITEM_WALL, wallid);
     return 1;
 }
 
@@ -333,5 +333,111 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectAcceleration(AMX* amx, cell* params)
     storeFloatInNative(amx, params[2], object->m_AX);
     storeFloatInNative(amx, params[3], object->m_AY);
     storeFloatInNative(amx, params[4], object->m_AZ);
+    return 1;
+}
+
+//native PHY_ToggleObjectPlayerColls(objectid, toggle = 1, Float:constant = 1.0, Float:distoffset = 0.8, Float:zoffsetlow = 1.0, Float:zoffsethigh = 1.0);
+cell AMX_NATIVE_CALL Natives::PHY_ToggleObjectPlayerColls(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(6);
+
+    int objectid = (int) params[1];
+    int toggle = (int) params[2];
+    float constant = amx_ctof(params[3]);
+    float distoffset = amx_ctof(params[4]);
+    float zoffsetlow = amx_ctof(params[5]);
+    float zoffsethigh = amx_ctof(params[6]);
+
+    auto object = g_Manager->findObject(objectid);
+
+    if(object == nullptr) return 0;
+
+    if(toggle)
+    {
+        object->m_Properties |= PHY_OBJECT_PLAYER_COLLISIONS;
+        object->m_PlayerConst = constant;
+        object->m_PlayerDist = distoffset;
+        object->m_PlayerLowZ = zoffsetlow;
+        object->m_PlayerHighZ = zoffsethigh;
+    }
+    else
+    {
+        object->m_Properties &= ~PHY_OBJECT_PLAYER_COLLISIONS;
+    }
+    return 1;
+}
+
+//native PHY_CreateCylinder(Float:x, Float:y, Float:size, Float:constant = 1.0, Float:low = FLOAT_NEG_INFINITY, Float:high = FLOAT_INFINITY);
+cell AMX_NATIVE_CALL Natives::PHY_CreateCylinder(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(6);
+
+    float x = amx_ctof(params[1]);
+    float y = amx_ctof(params[2]);
+    float size = amx_ctof(params[3]);
+    float constant = amx_ctof(params[4]);
+    float low = amx_ctof(params[5]);
+    float high = amx_ctof(params[6]);
+
+    int id = g_Manager->addCylinder(Cylinder(x, y, size, constant, low, high));
+    return id;
+}
+
+//native PHY_DestroyCylinder(cylinderid);
+cell AMX_NATIVE_CALL Natives::PHY_DestroyCylinder(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(1);
+
+    int cylinderid = (int) params[1];
+
+    g_Manager->deleteItem(PHY_ITEM_CYLINDER, cylinderid);
+    return 1;
+}
+
+//native PHY_SetCylinderWorld(cylinderid, world);
+cell AMX_NATIVE_CALL Natives::PHY_SetCylinderWorld(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(2);
+
+    int cylinderid = (int) params[1];
+    int worldid = (int) params[2];
+
+    auto cylinder = g_Manager->findCylinder(cylinderid);
+
+    if(cylinder == nullptr) return 0;
+    
+    cylinder->setWorld(worldid);
+    return 1;
+}
+
+//native PHY_GetObjectSpeed(objectid, &Float:speed, _3D = 0);
+cell AMX_NATIVE_CALL Natives::PHY_GetObjectSpeed(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(3);
+
+    int objectid = (int) params[1];
+    bool _3D = (bool) params[3];
+
+    auto object = g_Manager->findObject(objectid);
+
+    if(object == nullptr) return 0;
+
+    storeFloatInNative(amx, params[2], object->getSpeed(_3D));
+	return 1;
+}
+
+//native PHY_SetPlayerWorld(playerid, world);
+cell AMX_NATIVE_CALL Natives::PHY_SetPlayerWorld(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(2);
+
+    int playerid = (int) params[1];
+    int worldid = (int) params[2];
+
+    auto player = g_Manager->findPlayer(playerid);
+
+    if(player == nullptr) return 0;
+    
+    player->setWorld(worldid);
     return 1;
 }

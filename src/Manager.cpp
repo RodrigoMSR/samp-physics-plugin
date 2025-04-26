@@ -24,16 +24,21 @@ int Manager::addWall(Wall wall)
     return id;
 }
 
-void Manager::deleteObject(int id)
+int Manager::addCylinder(Cylinder cylinder)
 {
-    m_RemoveObjects.insert(id);
-    //m_Objects.erase(id);
+    int id = m_Identifier[PHY_ITEM_CYLINDER].get();
+
+    cylinder.m_Id = id;
+
+    m_Cylinders.insert(std::make_pair(id, std::shared_ptr<Cylinder>(new Cylinder(cylinder))));
+    return id;
 }
 
-void Manager::deleteWall(int id)
+void Manager::deleteItem(int type, int id)
 {
-    m_RemoveWalls.insert(id);
-    //m_Walls.erase(id);
+    if(type < 0 || type >= PHY_MAX_ITEM_TYPES) return;
+
+    m_RemoveItems[type].insert(id);
 }
 
 std::shared_ptr<CObject> Manager::findObject(int id)
@@ -50,6 +55,24 @@ std::shared_ptr<Wall> Manager::findWall(int id)
     auto it = m_Walls.find(id);
 
     if(it == m_Walls.end()) return nullptr;
+    
+    return it->second;
+}
+
+std::shared_ptr<Cylinder> Manager::findCylinder(int id)
+{
+    auto it = m_Cylinders.find(id);
+
+    if(it == m_Cylinders.end()) return nullptr;
+    
+    return it->second;
+}
+
+std::shared_ptr<Player> Manager::findPlayer(int id)
+{
+    auto it = m_Players.find(id);
+
+    if(it == m_Players.end()) return nullptr;
     
     return it->second;
 }
@@ -79,24 +102,6 @@ bool Manager::shouldUpdate()
     return true;
 }
 
-void Manager::removeMarkedItems()
-{
-    for(auto id : m_RemoveObjects)
-    {
-        if(m_Objects.erase(id))
-            m_Identifier[PHY_ITEM_OBJECT].remove(id, m_Objects.size());
-    }
-
-    for(auto id : m_RemoveWalls)
-    {
-        if(m_Walls.erase(id))
-            m_Identifier[PHY_ITEM_WALL].remove(id, m_Walls.size());
-    }
-
-    m_RemoveObjects.clear();
-    m_RemoveWalls.clear();
-}
-
 int Manager::countItems(int type)
 {
     switch(type)
@@ -105,8 +110,49 @@ int Manager::countItems(int type)
             return m_Objects.size();
         case PHY_ITEM_WALL:
             return m_Walls.size();
+        case PHY_ITEM_CYLINDER:
+            return m_Cylinders.size();
     }
     return 0;
+}
+
+void Manager::removeMarkedItems()
+{
+    for(int type = 0; type < PHY_MAX_ITEM_TYPES; type++)
+    {
+        for(auto id : m_RemoveItems[type])
+        {
+            int erasedCount = 0;
+
+            switch(type)
+            {
+                case PHY_ITEM_OBJECT:
+                    erasedCount = m_Objects.erase(id);
+                    break;
+                case PHY_ITEM_WALL:
+                    erasedCount = m_Walls.erase(id);
+                    break;
+                case PHY_ITEM_CYLINDER:
+                    erasedCount = m_Cylinders.erase(id);
+                    break;
+            }
+
+            if(erasedCount > 0)
+                m_Identifier[type].remove(id, countItems(type));
+        }
+
+        m_RemoveItems[type].clear();
+    }
+}
+
+void Manager::addPlayer(int playerid)
+{
+    m_Players.insert(std::make_pair(playerid, std::shared_ptr<Player>(new Player(playerid))));
+}
+
+void Manager::deletePlayer(int playerid)
+{
+    m_Players.erase(playerid);
 }
 
 void Manager::update()
@@ -148,7 +194,7 @@ void Manager::update()
                 if(a->m_VZ > 0)
                 {
                     a->m_VZ = -a->m_VZ * a->m_BoundConst;
-                    //CallLocalFunction("PHY_OnObjectCollideWithZBound", "dd", a, 1);
+                    Callbacks::OnObjectCollideWithZBound(a->m_Id, 1);
                 }
                 z1 = a->m_HighZBound;
             }
@@ -157,7 +203,7 @@ void Manager::update()
                 if(a->m_VZ < 0)
                 {
                     a->m_VZ = -a->m_VZ * a->m_BoundConst;
-                    //CallLocalFunction("PHY_OnObjectCollideWithZBound", "dd", a, 0);
+                    Callbacks::OnObjectCollideWithZBound(a->m_Id, 0);
                 }
                 z1 = a->m_LowZBound;
             }
@@ -280,21 +326,23 @@ void Manager::update()
                 }
             }
 
-            /*
             if(!a->isGhostWithCylinders())
             {
-                foreach(new c : ITER_Cylinder)
+                for(auto& c_it : m_Cylinders)
                 {
-                    if((!a->m_World || !c.m_World || a->m_World == c.m_World))
+                    auto c = c_it.second;
+
+                    if((!a->m_World || !c->m_World || a->m_World == c->m_World))
                     {
-                        if(c.m_Z1 - a->m_Size < z1 < c.m_Z2 + a->m_Size)
+                        if(z1 < c->m_Z2 + a->m_Size && z1 > c->m_Z1 - a->m_Size)
                         {
-                            x2 = c.PHY_X;
-                            y2 = c.PHY_Y;
+                            x2 = c->m_X;
+                            y2 = c->m_Y;
                             dx = x1 - x2;
                             dy = y1 - y2;
                             dist = (dx * dx) + (dy * dy);
-                            maxdist = a->m_Size + c.m_Size;
+                            maxdist = a->m_Size + c->m_Size;
+
                             if(dist < (maxdist * maxdist))
                             {
                                 mag = a->m_VX * dx + a->m_VY * dy;
@@ -302,14 +350,14 @@ void Manager::update()
                                 if(mag < 0.0)
                                 {
                                     angle = -atan2_degrees(dy, dx);
-                                    newvx1 = -c.m_BounceConst * (a->m_VX * cos_degrees(angle) - a->m_VY * sin_degrees(angle));
-                                    newvy1 = c.m_BounceConst * (a->m_VX * sin_degrees(angle) + a->m_VY * cos_degrees(angle));
+                                    newvx1 = -c->m_BounceConst * (a->m_VX * cos_degrees(angle) - a->m_VY * sin_degrees(angle));
+                                    newvy1 = c->m_BounceConst * (a->m_VX * sin_degrees(angle) + a->m_VY * cos_degrees(angle));
 
                                     angle = -angle;
                                     a->m_VX = newvx1 * cos_degrees(angle) - newvy1 * sin_degrees(angle);
                                     a->m_VY = newvx1 * sin_degrees(angle) + newvy1 * cos_degrees(angle);
 
-                                    CallLocalFunction("PHY_OnObjectCollideWithCylinder", "dd", a, c);
+                                    Callbacks::OnObjectCollideWithCylinder(a->m_Id, c->m_Id);
                                 }
                             }
                         }
@@ -319,18 +367,23 @@ void Manager::update()
 
             if(a->isCollidingWithPlayers())
             {
-                foreach(new i : Player)
+                for(auto& p_it : m_Players)
                 {
-                    if((!a->m_World || !PHY_Player[i][m_World] || a->m_World == PHY_Player[i][m_World]))
+                    int playerid = p_it.first;
+                    auto p = p_it.second;
+                    
+                    //if(!a->m_World || !getPlayerWorld(i) || a->m_World == getPlayerWorld(i))
+                    if(!a->m_World || a->m_World == p->getWorld())
                     {
-                        GetPlayerPos(i, x2, y2, z2);
-                            
-                        if(z2 - a->m_PlayerLowZ - a->m_Size < z1 < z2 + a->m_PlayerHighZ + a->m_Size)
+                        sampgdk::GetPlayerPos(playerid, &x2, &y2, &z2);
+                        
+                        if(z1 < z2 + a->m_PlayerHighZ + a->m_Size && z1 > z2 - a->m_PlayerLowZ - a->m_Size)
                         {
                             dx = x1 - x2;
                             dy = y1 - y2;
                             dist = (dx * dx) + (dy * dy);
                             maxdist = a->m_Size + a->m_PlayerDist;
+
                             if(dist < (maxdist * maxdist))
                             {
                                 mag = a->m_VX * dx + a->m_VY * dy;
@@ -345,14 +398,13 @@ void Manager::update()
                                     a->m_VX = newvx1 * cos_degrees(angle) - newvy1 * sin_degrees(angle);
                                     a->m_VY = newvx1 * sin_degrees(angle) + newvy1 * cos_degrees(angle);
 
-                                    CallLocalFunction("PHY_OnObjectCollideWithPlayer", "dd", a, i);
+                                    Callbacks::OnObjectCollideWithPlayer(a->m_Id, playerid);
                                 }
                             }
                         }
                     }
                 }
             }
-            */
             
             moveangle = atan2_degrees(a->m_VY, a->m_VX) - 90.0;
             speed = sqrt(a->m_VX * a->m_VX + a->m_VY * a->m_VY);

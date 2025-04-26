@@ -49,3 +49,51 @@ int Callbacks::OnObjectCollideWithWall(int handleid, int wallid)
 	}
 	return 1;
 }
+
+int Callbacks::OnObjectCollideWithPlayer(int handleid, int playerid)
+{
+	int amxIndex = 0;
+
+	for(AMX* a : *g_Interfaces)
+	{
+		if(!amx_FindPublic(a, "PHY_OnObjectCollideWithPlayer", &amxIndex))
+		{
+			amx_Push(a, (cell)playerid);
+			amx_Push(a, (cell)handleid);
+			amx_Exec(a, NULL, amxIndex);
+		}
+	}
+	return 1;
+}
+
+int Callbacks::OnObjectCollideWithCylinder(int handleid, int cylinderid)
+{
+	int amxIndex = 0;
+
+	for(AMX* a : *g_Interfaces)
+	{
+		if(!amx_FindPublic(a, "PHY_OnObjectCollideWithCylinder", &amxIndex))
+		{
+			amx_Push(a, (cell)cylinderid);
+			amx_Push(a, (cell)handleid);
+			amx_Exec(a, NULL, amxIndex);
+		}
+	}
+	return 1;
+}
+
+int Callbacks::OnObjectCollideWithZBound(int handleid, int lowhigh)
+{
+	int amxIndex = 0;
+
+	for(AMX* a : *g_Interfaces)
+	{
+		if(!amx_FindPublic(a, "PHY_OnObjectCollideWithZBound", &amxIndex))
+		{
+			amx_Push(a, (cell)lowhigh);
+			amx_Push(a, (cell)handleid);
+			amx_Exec(a, NULL, amxIndex);
+		}
+	}
+	return 1;
+}
