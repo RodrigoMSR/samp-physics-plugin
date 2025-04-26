@@ -5,7 +5,7 @@
 #include <memory>
 #include <chrono>
 #include "Wall.h"
-#include "CObject.h"
+#include "Object.h"
 #include "Cylinder.h"
 #include "Player.h"
 #include "identifier.h"
@@ -14,7 +14,7 @@
 class Manager
 {
 private:
-    std::unordered_map<int, std::shared_ptr<CObject>> m_Objects;
+    std::unordered_map<int, std::shared_ptr<Object>> m_Objects;
     std::unordered_map<int, std::shared_ptr<Wall>> m_Walls;
     std::unordered_map<int, std::shared_ptr<Cylinder>> m_Cylinders;
     std::unordered_map<int, std::shared_ptr<Player>> m_Players;
@@ -28,13 +28,13 @@ private:
     int storeItem(int type, T item, std::unordered_map<int, std::shared_ptr<T>> &container);
 
 public:
-    int addObject(CObject object);
+    int addObject(Object object);
     int addWall(Wall wall);
     int addCylinder(Cylinder cylinder);
     void addPlayer(int playerid);
     void deletePlayer(int playerid);
     void deleteItem(int type, int id);
-    std::shared_ptr<CObject> findObject(int id);
+    std::shared_ptr<Object> findObject(int id);
     std::shared_ptr<Wall> findWall(int id);
     std::shared_ptr<Cylinder> findCylinder(int id);
     std::shared_ptr<Player> findPlayer(int id);

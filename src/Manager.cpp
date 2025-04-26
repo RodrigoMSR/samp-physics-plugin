@@ -4,13 +4,13 @@
 #include "streamer.h"
 #include <cmath>
 
-int Manager::addObject(CObject object)
+int Manager::addObject(Object object)
 {
     int id = m_Identifier[PHY_ITEM_OBJECT].get();
 
     object.m_Id = id;
 
-    m_Objects.insert(std::make_pair(id, std::shared_ptr<CObject>(new CObject(object))));
+    m_Objects.insert(std::make_pair(id, std::shared_ptr<Object>(new Object(object))));
     return id;
 }
 
@@ -41,7 +41,7 @@ void Manager::deleteItem(int type, int id)
     m_RemoveItems[type].insert(id);
 }
 
-std::shared_ptr<CObject> Manager::findObject(int id)
+std::shared_ptr<Object> Manager::findObject(int id)
 {
     auto it = m_Objects.find(id);
 

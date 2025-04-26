@@ -1,6 +1,6 @@
 #include "Natives.h"
 #include "pointers.h"
-#include "CObject.h"
+#include "Object.h"
 #include "util.h"
 #include "streamer.h"
 
@@ -18,7 +18,7 @@ cell AMX_NATIVE_CALL Natives::PHY_InitObject(AMX* amx, cell* params)
     size = amx_ctof(params[4]);
     mode = (int) params[5];
     
-    int id = g_Manager->addObject(CObject(objectid, modelid, mass, size, mode));
+    int id = g_Manager->addObject(Object(objectid, modelid, mass, size, mode));
 
     return id;
 }
