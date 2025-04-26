@@ -4,7 +4,7 @@
 #define _physics_included
 
 #if !defined _streamer_included
-	#error You must include streamer.inc before physics.inc
+	#error Physics plugin requires Streamer plugin
 #endif
 
 // Definitions
