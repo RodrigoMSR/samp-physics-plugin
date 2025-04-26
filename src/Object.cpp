@@ -1,7 +1,7 @@
-#include "Object.h"
-#include "util.h"
-#include "streamer.h"
-#include "model_sizes.h"
+#include "Object.hpp"
+#include "util.hpp"
+#include "Streamer.hpp"
+#include "ModelSizes.hpp"
 #include <cmath>
 
 Object::Object(int objectid, int modelid, float mass, float size, int mode)
@@ -74,32 +74,32 @@ void Object::applyQuaternionsRotation(float speed, float moveangle, int updateIn
 {
 	float rx, ry, rz, dx, dy, q_roll[4], vx, vy, vz, quat[4];
 	
-	dx = sin_degrees(-moveangle);
-	dy = cos_degrees(-moveangle);
+	dx = Util::sin_degrees(-moveangle);
+	dy = Util::cos_degrees(-moveangle);
 
-	PHY_vectorcrossp(dx, dy, 0.0, 0.0, 0.0, 1.0, vx, vy, vz);
-	PHY_QuatFromAxisAngle(vx, vy, vz, (speed * (updateInterval/1000.0) * (180.0/3.14159)) / m_Size, q_roll[0], q_roll[1], q_roll[2], q_roll[3]);
+	Util::vectorcrossp(dx, dy, 0.0, 0.0, 0.0, 1.0, vx, vy, vz);
+	Util::quatFromAxisAngle(vx, vy, vz, (speed * (updateInterval/1000.0) * (180.0/3.14159)) / m_Size, q_roll[0], q_roll[1], q_roll[2], q_roll[3]);
 	
 	quat[0] = m_QW;
 	quat[1] = m_QX;
 	quat[2] = m_QY;
 	quat[3] = m_QZ;
 
-	PHY_GetQuatProduct(quat, q_roll, quat);
+	Util::getQuatProduct(quat, q_roll, quat);
 	
 	m_QW = quat[0];
 	m_QX = quat[1];
 	m_QY = quat[2];
 	m_QZ = quat[3];
 	
-	PHY_GetQuaternionAngles(quat[0], quat[1], quat[2], quat[3], rx, ry, rz);
+	Util::getQuaternionAngles(quat[0], quat[1], quat[2], quat[3], rx, ry, rz);
 	
 	Streamer::SetDynamicObjectRot(m_DynObject, rx, ry, rz);
 }
 
 float Object::getMoveAngle()
 {
-    return (atan2_degrees(m_VY, m_VX) - 90.0);
+    return (Util::atan2_degrees(m_VY, m_VX) - 90.0);
 }
 
 void Object::toggleRolling(bool toggle, int rollingmode)
@@ -116,7 +116,7 @@ void Object::toggleRolling(bool toggle, int rollingmode)
         float rx, ry, rz;
         Streamer::GetDynamicObjectRot(m_DynObject, rx, ry, rz);
 
-        PHY_GetRotationQuaternion(rx, ry, rz, m_QW, m_QX, m_QY, m_QZ);
+        Util::getRotationQuaternion(rx, ry, rz, m_QW, m_QX, m_QY, m_QZ);
     }
     else
     {

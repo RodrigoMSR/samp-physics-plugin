@@ -1,5 +1,5 @@
-#include "pointers.h"
-#include "Callbacks.h"
+#include "pointers.hpp"
+#include "Callbacks.hpp"
 #include <sampgdk.h>
 #include <unordered_set>
 

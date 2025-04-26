@@ -1,8 +1,8 @@
-#include "Natives.h"
-#include "pointers.h"
-#include "Object.h"
-#include "util.h"
-#include "streamer.h"
+#include "Natives.hpp"
+#include "pointers.hpp"
+#include "Object.hpp"
+#include "util.hpp"
+#include "Streamer.hpp"
 
 //native PHY_InitObject(objectid, modelid = 0, Float:mass = 1.0, Float:size = FLOAT_NAN, mode = PHY_MODE_3D);
 cell AMX_NATIVE_CALL Natives::PHY_InitObject(AMX* amx, cell* params)
@@ -100,9 +100,9 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectVelocity(AMX* amx, cell* params)
 
     if(object == nullptr) return 0;
 
-    storeFloatInNative(amx, params[2], object->m_VX);
-    storeFloatInNative(amx, params[3], object->m_VY);
-    storeFloatInNative(amx, params[4], object->m_VZ);
+    Util::storeFloatInNative(amx, params[2], object->m_VX);
+    Util::storeFloatInNative(amx, params[3], object->m_VY);
+    Util::storeFloatInNative(amx, params[4], object->m_VZ);
     return 1;
 }
 
@@ -226,7 +226,7 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectMoveAngle(AMX* amx, cell* params)
 
     if(object == nullptr) return 0;
     
-    storeFloatInNative(amx, params[2], object->getMoveAngle());
+    Util::storeFloatInNative(amx, params[2], object->getMoveAngle());
     return 1;
 }
 
@@ -330,9 +330,9 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectAcceleration(AMX* amx, cell* params)
 
     if(object == nullptr) return 0;
     
-    storeFloatInNative(amx, params[2], object->m_AX);
-    storeFloatInNative(amx, params[3], object->m_AY);
-    storeFloatInNative(amx, params[4], object->m_AZ);
+    Util::storeFloatInNative(amx, params[2], object->m_AX);
+    Util::storeFloatInNative(amx, params[3], object->m_AY);
+    Util::storeFloatInNative(amx, params[4], object->m_AZ);
     return 1;
 }
 
@@ -422,7 +422,7 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectSpeed(AMX* amx, cell* params)
 
     if(object == nullptr) return 0;
 
-    storeFloatInNative(amx, params[2], object->getSpeed(_3D));
+    Util::storeFloatInNative(amx, params[2], object->getSpeed(_3D));
 	return 1;
 }
 

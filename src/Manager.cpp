@@ -1,7 +1,7 @@
-#include "Manager.h"
-#include "util.h"
-#include "Callbacks.h"
-#include "streamer.h"
+#include "Manager.hpp"
+#include "util.hpp"
+#include "Callbacks.hpp"
+#include "Streamer.hpp"
 #include <cmath>
 
 int Manager::addObject(Object object)
@@ -258,11 +258,11 @@ void Manager::update()
                                 newvy2 = b->m_VY;
                                 newvz2 = b->m_VZ;
 
-                                projectVonU(a->m_VX, a->m_VY, a->m_VZ, dx, dy, dz, tmpvx, tmpvy, tmpvz);
+                                Util::projectVonU(a->m_VX, a->m_VY, a->m_VZ, dx, dy, dz, tmpvx, tmpvy, tmpvz);
                                 newvx1 -= tmpvx;
                                 newvy1 -= tmpvy;
                                 newvz1 -= tmpvz;
-                                projectVonU(b->m_VX, b->m_VY, b->m_VZ, -dx, -dy, -dz, tmpvx, tmpvy, tmpvz);
+                                Util::projectVonU(b->m_VX, b->m_VY, b->m_VZ, -dx, -dy, -dz, tmpvx, tmpvy, tmpvz);
                                 tmpvx = ((a->m_Mass - b->m_Mass) * a->m_VX + 2 * b->m_Mass * tmpvx) / (a->m_Mass + b->m_Mass);
                                 tmpvy = ((a->m_Mass - b->m_Mass) * a->m_VY + 2 * b->m_Mass * tmpvy) / (a->m_Mass + b->m_Mass);
                                 tmpvz = ((a->m_Mass - b->m_Mass) * a->m_VZ + 2 * b->m_Mass * tmpvz) / (a->m_Mass + b->m_Mass);
@@ -270,11 +270,11 @@ void Manager::update()
                                 newvy1 += tmpvy;
                                 newvz1 += tmpvz;
 
-                                projectVonU(b->m_VX, b->m_VY, b->m_VZ, dx, dy, dz, tmpvx, tmpvy, tmpvz);
+                                Util::projectVonU(b->m_VX, b->m_VY, b->m_VZ, dx, dy, dz, tmpvx, tmpvy, tmpvz);
                                 newvx2 -= tmpvx;
                                 newvy2 -= tmpvy;
                                 newvz2 -= tmpvz;
-                                projectVonU(a->m_VX, a->m_VY, a->m_VZ, -dx, -dy, -dz, tmpvx, tmpvy, tmpvz);
+                                Util::projectVonU(a->m_VX, a->m_VY, a->m_VZ, -dx, -dy, -dz, tmpvx, tmpvy, tmpvz);
                                 tmpvx = ((b->m_Mass - a->m_Mass) * b->m_VX + 2 * a->m_Mass * tmpvx) / (a->m_Mass + b->m_Mass);
                                 tmpvy = ((b->m_Mass - a->m_Mass) * b->m_VY + 2 * a->m_Mass * tmpvy) / (a->m_Mass + b->m_Mass);
                                 tmpvz = ((b->m_Mass - a->m_Mass) * b->m_VZ + 2 * a->m_Mass * tmpvz) / (a->m_Mass + b->m_Mass);
@@ -307,18 +307,18 @@ void Manager::update()
                     {
                         angle = w->m_ANG;
                         if(z1 < w->m_Z2 + a->m_Size && z1 > w->m_Z1 - a->m_Size + a->m_Size &&
-                        (check_segment_intersection(w->m_X1, w->m_Y1, w->m_X2, w->m_Y2, x1, y1, a->m_Size, xclosest, yclosest) ||
-                        check_segment_intersection(w->m_X1, w->m_Y1, w->m_X2, w->m_Y2, (x + x1)/2, (y + y1)/2, a->m_Size, xclosest, yclosest)))
+                        (Util::check_segment_intersection(w->m_X1, w->m_Y1, w->m_X2, w->m_Y2, x1, y1, a->m_Size, xclosest, yclosest) ||
+                        Util::check_segment_intersection(w->m_X1, w->m_Y1, w->m_X2, w->m_Y2, (x + x1)/2, (y + y1)/2, a->m_Size, xclosest, yclosest)))
                         {
-                            newvx1 = w->m_BounceConst * (a->m_VX * cos_degrees(angle) - a->m_VY * sin_degrees(angle));
-                            newvy1 = -w->m_BounceConst * (a->m_VX * sin_degrees(angle) + a->m_VY * cos_degrees(angle));
+                            newvx1 = w->m_BounceConst * (a->m_VX * Util::cos_degrees(angle) - a->m_VY * Util::sin_degrees(angle));
+                            newvy1 = -w->m_BounceConst * (a->m_VX * Util::sin_degrees(angle) + a->m_VY * Util::cos_degrees(angle));
                             angle = -angle;
-                            a->m_VX = newvx1 * cos_degrees(angle) - newvy1 * sin_degrees(angle);
-                            a->m_VY = newvx1 * sin_degrees(angle) + newvy1 * cos_degrees(angle);
+                            a->m_VX = newvx1 * Util::cos_degrees(angle) - newvy1 * Util::sin_degrees(angle);
+                            a->m_VY = newvx1 * Util::sin_degrees(angle) + newvy1 * Util::cos_degrees(angle);
 
                             angle = angle + (newvy1 > 0 ? 90.0 : -90.0);
-                            x1 = xclosest + (a->m_Size + 0.001) * cos_degrees(angle);
-                            y1 = yclosest + (a->m_Size + 0.001) * sin_degrees(angle);
+                            x1 = xclosest + (a->m_Size + 0.001) * Util::cos_degrees(angle);
+                            y1 = yclosest + (a->m_Size + 0.001) * Util::sin_degrees(angle);
 
                             Callbacks::OnObjectCollideWithWall(a->m_Id, w->m_Id);
                         }
@@ -349,13 +349,13 @@ void Manager::update()
 
                                 if(mag < 0.0)
                                 {
-                                    angle = -atan2_degrees(dy, dx);
-                                    newvx1 = -c->m_BounceConst * (a->m_VX * cos_degrees(angle) - a->m_VY * sin_degrees(angle));
-                                    newvy1 = c->m_BounceConst * (a->m_VX * sin_degrees(angle) + a->m_VY * cos_degrees(angle));
+                                    angle = -Util::atan2_degrees(dy, dx);
+                                    newvx1 = -c->m_BounceConst * (a->m_VX * Util::cos_degrees(angle) - a->m_VY * Util::sin_degrees(angle));
+                                    newvy1 = c->m_BounceConst * (a->m_VX * Util::sin_degrees(angle) + a->m_VY * Util::cos_degrees(angle));
 
                                     angle = -angle;
-                                    a->m_VX = newvx1 * cos_degrees(angle) - newvy1 * sin_degrees(angle);
-                                    a->m_VY = newvx1 * sin_degrees(angle) + newvy1 * cos_degrees(angle);
+                                    a->m_VX = newvx1 * Util::cos_degrees(angle) - newvy1 * Util::sin_degrees(angle);
+                                    a->m_VY = newvx1 * Util::sin_degrees(angle) + newvy1 * Util::cos_degrees(angle);
 
                                     Callbacks::OnObjectCollideWithCylinder(a->m_Id, c->m_Id);
                                 }
@@ -390,13 +390,13 @@ void Manager::update()
 
                                 if(mag < 0.0)
                                 {
-                                    angle = -atan2_degrees(dy, dx);
-                                    newvx1 = -a->m_PlayerConst * (a->m_VX * cos_degrees(angle) - a->m_VY * sin_degrees(angle));
-                                    newvy1 = a->m_PlayerConst * (a->m_VX * sin_degrees(angle) + a->m_VY * cos_degrees(angle));
+                                    angle = -Util::atan2_degrees(dy, dx);
+                                    newvx1 = -a->m_PlayerConst * (a->m_VX * Util::cos_degrees(angle) - a->m_VY * Util::sin_degrees(angle));
+                                    newvy1 = a->m_PlayerConst * (a->m_VX * Util::sin_degrees(angle) + a->m_VY * Util::cos_degrees(angle));
 
                                     angle = -angle;
-                                    a->m_VX = newvx1 * cos_degrees(angle) - newvy1 * sin_degrees(angle);
-                                    a->m_VY = newvx1 * sin_degrees(angle) + newvy1 * cos_degrees(angle);
+                                    a->m_VX = newvx1 * Util::cos_degrees(angle) - newvy1 * Util::sin_degrees(angle);
+                                    a->m_VY = newvx1 * Util::sin_degrees(angle) + newvy1 * Util::cos_degrees(angle);
 
                                     Callbacks::OnObjectCollideWithPlayer(a->m_Id, playerid);
                                 }
@@ -406,7 +406,7 @@ void Manager::update()
                 }
             }
             
-            moveangle = atan2_degrees(a->m_VY, a->m_VX) - 90.0;
+            moveangle = Util::atan2_degrees(a->m_VY, a->m_VX) - 90.0;
             speed = sqrt(a->m_VX * a->m_VX + a->m_VY * a->m_VY);
 
             if(a->m_Friction != 0 && z1 == a->m_LowZBound)
@@ -416,8 +416,8 @@ void Manager::update()
                 if(speed < 0.001)
                     speed = 0;
                 
-                a->m_VX = speed * sin_degrees(-moveangle);
-                a->m_VY = speed * cos_degrees(-moveangle);
+                a->m_VX = speed * Util::sin_degrees(-moveangle);
+                a->m_VY = speed * Util::cos_degrees(-moveangle);
             }
 
             if(a->m_AirResistance != 0)

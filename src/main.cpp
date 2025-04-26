@@ -1,7 +1,7 @@
 #include <unordered_set>
 #include <sampgdk.h>
-#include "Manager.h"
-#include "Natives.h"
+#include "Manager.hpp"
+#include "Natives.hpp"
 
 #define PLUGIN_NAME "Physics"
 #define PLUGIN_VERSION "1.0"

@@ -50,7 +50,7 @@
     Big thanks to Kalcor for dumping the raw data for this out of the game.
 */
 
-#include "model_sizes.h"
+#include "ModelSizes.hpp"
 
 static const int MODEL_SIZES_COUNT = 19902;
 

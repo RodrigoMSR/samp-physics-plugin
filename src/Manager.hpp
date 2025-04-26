@@ -4,11 +4,11 @@
 #include <unordered_set>
 #include <memory>
 #include <chrono>
-#include "Wall.h"
-#include "Object.h"
-#include "Cylinder.h"
-#include "Player.h"
-#include "identifier.h"
+#include "Wall.hpp"
+#include "Object.hpp"
+#include "Cylinder.hpp"
+#include "Player.hpp"
+#include "Identifier.hpp"
 #include <sampgdk.h>
 
 class Manager

@@ -1,4 +1,4 @@
-#include "Cylinder.h"
+#include "Cylinder.hpp"
 
 Cylinder::Cylinder(float x, float y, float size, float constant, float low, float high)
 {

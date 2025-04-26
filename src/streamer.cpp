@@ -1,4 +1,4 @@
-#include "streamer.h"
+#include "Streamer.hpp"
 #include <sampgdk.h>
 
 void Streamer::GetDynamicObjectRot(int objectid, float& rx, float& ry, float& rz)
