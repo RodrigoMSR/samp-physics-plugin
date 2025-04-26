@@ -42,7 +42,7 @@ native PHY_SetObjectVelocity(objectid, Float:vx, Float:vy, Float:vz = 0.0);
 native PHY_GetObjectVelocity(objectid, &Float:vx, &Float:vy, &Float:vz);
 native PHY_GetHandleObject(handleid);
 native PHY_SetObjectFriction(objectid, Float:friction);
-native PHY_RollObject(objectid, bool:toggle = true, rollingmode = PHY_ROLLING_MODE_DEFAULT);
+native PHY_RollObject(objectid, bool:toggle = true, rollingmode = PHY_ROLLING_MODE_ADVANCED);
 native PHY_SetObjectWorld(objectid, world);
 native PHY_SetObjectAirResistance(objectid, Float:resistance);
 native PHY_GetObjectMoveAngle(objectid, &Float:moveangle);
