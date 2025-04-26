@@ -24,9 +24,6 @@ private:
     std::chrono::system_clock::time_point m_LastUpdate = std::chrono::system_clock::now();
     int m_LastDelayMs = 0;
 
-    template<typename T>
-    int storeItem(int type, T item, std::unordered_map<int, std::shared_ptr<T>> &container);
-
 public:
     int addObject(Object object);
     int addWall(Wall wall);
