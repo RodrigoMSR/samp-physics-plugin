@@ -40,4 +40,31 @@ CMD:throwball(playerid)
 	Streamer_Update(playerid);
 	return 1;
 }
+
+public PHY_OnObjectCollideWithZBound(objectid, lowhigh)
+{
+	PhyObjectPlaySound(objectid, 4600);
+	return 1;
+}
+
+public PHY_OnObjectCollideWithObject(object1, object2)
+{
+	PhyObjectPlaySound(object1, 4600);
+	return 1;
+}
+
+PhyObjectPlaySound(objectid, soundid)
+{
+	new Float:x, Float:y, Float:z;
+	GetDynamicObjectPos(PHY_GetDynamicObject(objectid), x, y, z);
+
+	for(new i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(IsPlayerInRangeOfPoint(i, 30.0, x, y, z))
+		{
+			PlayerPlaySound(i, soundid, x, y, z);
+		}
+	}
+	return 1;
+}
 ```
