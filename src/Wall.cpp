@@ -1,5 +1,5 @@
 #include "Wall.hpp"
-#include "util.hpp"
+#include "Util.hpp"
 
 Wall::Wall(float x1, float y1, float x2, float y2, float constant, float low, float high)
 {

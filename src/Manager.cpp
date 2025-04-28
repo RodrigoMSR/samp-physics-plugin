@@ -1,5 +1,5 @@
 #include "Manager.hpp"
-#include "util.hpp"
+#include "Util.hpp"
 #include "Callbacks.hpp"
 #include "Streamer.hpp"
 #include <cmath>

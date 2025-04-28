@@ -1,7 +1,7 @@
 #include "Natives.hpp"
 #include "pointers.hpp"
 #include "Object.hpp"
-#include "util.hpp"
+#include "Util.hpp"
 #include "Streamer.hpp"
 #include "ModelSizes.hpp"
 

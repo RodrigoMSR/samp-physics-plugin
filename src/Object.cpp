@@ -1,5 +1,5 @@
 #include "Object.hpp"
-#include "util.hpp"
+#include "Util.hpp"
 #include "Streamer.hpp"
 #include "ModelSizes.hpp"
 #include <cmath>
