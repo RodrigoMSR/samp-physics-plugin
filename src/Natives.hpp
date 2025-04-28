@@ -17,7 +17,7 @@ namespace Natives
     cell AMX_NATIVE_CALL PHY_GetObjectVelocity(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_DeleteObject(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_DestroyWall(AMX* amx, cell* params);
-    cell AMX_NATIVE_CALL PHY_GetHandleObject(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_GetDynamicObject(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_SetObjectFriction(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_RollObject(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_SetWallWorld(AMX* amx, cell* params);
@@ -36,4 +36,7 @@ namespace Natives
     cell AMX_NATIVE_CALL PHY_SetCylinderWorld(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_GetObjectSpeed(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_SetPlayerWorld(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_GetColSphereRadius(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_GetColSphereOffset(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_GetColCount(AMX* amx, cell* params);
 }

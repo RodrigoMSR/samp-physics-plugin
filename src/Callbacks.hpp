@@ -2,10 +2,10 @@
 
 namespace Callbacks
 {
-	int OnObjectUpdate(int handleid);
-	int OnObjectCollideWithObject(int handleid_a, int handleid_b);
-	int OnObjectCollideWithWall(int handleid, int wallid);
-	int OnObjectCollideWithPlayer(int handleid, int playerid);
-	int OnObjectCollideWithCylinder(int handleid, int cylinderid);
-	int OnObjectCollideWithZBound(int handleid, int lowhigh);
+	int OnObjectUpdate(int objectid);
+	int OnObjectCollideWithObject(int object1, int object2);
+	int OnObjectCollideWithWall(int objectid, int wallid);
+	int OnObjectCollideWithPlayer(int objectid, int playerid);
+	int OnObjectCollideWithCylinder(int objectid, int cylinderid);
+	int OnObjectCollideWithZBound(int objectid, int lowhigh);
 }

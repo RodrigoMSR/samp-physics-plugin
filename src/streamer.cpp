@@ -1,32 +1,34 @@
 #include "Streamer.hpp"
 #include <sampgdk.h>
 
-void Streamer::GetDynamicObjectRot(int objectid, float& rx, float& ry, float& rz)
+int Streamer::GetDynamicObjectRot(int objectid, float& rx, float& ry, float& rz)
 {
     AMX_NATIVE native = sampgdk::FindNative("GetDynamicObjectRot");
-    cell cx, cy, cz;
+    cell cx, cy, cz, ret;
     
-    if(native == NULL) return;
+    if(native == NULL) return 0;
 
-    sampgdk::InvokeNative(native, "dRRR", objectid, &cx, &cy, &cz);
+    ret = sampgdk::InvokeNative(native, "dRRR", objectid, &cx, &cy, &cz);
 
     rx = amx_ctof(cx);
     ry = amx_ctof(cy);
     rz = amx_ctof(cz);
+    return ret;
 }
 
-void Streamer::GetDynamicObjectPos(int objectid, float& x, float& y, float& z)
+int Streamer::GetDynamicObjectPos(int objectid, float& x, float& y, float& z)
 {
     AMX_NATIVE native = sampgdk::FindNative("GetDynamicObjectPos");
-    cell cx, cy, cz;
+    cell cx, cy, cz, ret;
 
-    if(native == NULL) return;
+    if(native == NULL) return 0;
 
-    sampgdk::InvokeNative(native, "dRRR", objectid, &cx, &cy, &cz);
+    ret = sampgdk::InvokeNative(native, "dRRR", objectid, &cx, &cy, &cz);
 
     x = amx_ctof(cx);
     y = amx_ctof(cy);
     z = amx_ctof(cz);
+    return ret;
 }
 
 void Streamer::SetDynamicObjectPos(int objectid, float& x, float& y, float& z)

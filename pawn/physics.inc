@@ -56,7 +56,6 @@
 #endif
 
 /* Callbacks */
-/*
 forward PHY_OnObjectUpdate(objectid);
 forward PHY_OnObjectCollideWithObject(object1, object2);
 forward PHY_OnObjectCollideWithZBound(objectid, lowhigh); // low bound = 0, high bound = 1
@@ -64,15 +63,6 @@ forward PHY_OnObjectCollideWithSAWorld(objectid, Float:cx, Float:cy, Float:cz);
 forward PHY_OnObjectCollideWithWall(objectid, wallid);
 forward PHY_OnObjectCollideWithCylinder(objectid, cylinderid);
 forward PHY_OnObjectCollideWithPlayer(objectid, playerid);
-*/
-
-forward PHY_OnObjectUpdate(handleid);
-forward PHY_OnObjectCollideWithObject(handleid_a, handleid_b);
-forward PHY_OnObjectCollideWithZBound(handleid, lowhigh); // low bound = 0, high bound = 1
-forward PHY_OnObjectCollideWithSAWorld(objectid, Float:cx, Float:cy, Float:cz);
-forward PHY_OnObjectCollideWithWall(handleid, wallid);
-forward PHY_OnObjectCollideWithCylinder(handleid, cylinderid);
-forward PHY_OnObjectCollideWithPlayer(handleid, playerid);
 
 enum (<<= 1)
 {

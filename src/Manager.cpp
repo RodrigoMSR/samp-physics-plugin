@@ -180,7 +180,8 @@ void Manager::update()
 	{
         auto a = a_it.second;
 
-        Streamer::GetDynamicObjectPos(a->m_DynObject, x, y, z);
+        if(!Streamer::GetDynamicObjectPos(a->m_DynObject, x, y, z))
+            continue;
         
         x1 = x + a->m_VX * timeMultiplier;
         y1 = y + a->m_VY * timeMultiplier;
@@ -221,7 +222,9 @@ void Manager::update()
             }
         }
         else
+        {
             z1 = z;
+        }
         
         if(a->isMoving())
         {
@@ -233,7 +236,8 @@ void Manager::update()
 
                     if(a->m_Id != b->m_Id && !b->isGhostWithObjects() && (!a->m_World || !b->m_World || a->m_World == b->m_World))
                     {
-                        Streamer::GetDynamicObjectPos(b->m_DynObject, x2, y2, z2);
+                        if(!Streamer::GetDynamicObjectPos(b->m_DynObject, x2, y2, z2))
+                            continue;
 
                         dx = x1 - x2;
                         dy = y1 - y2;

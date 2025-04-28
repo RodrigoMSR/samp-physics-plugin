@@ -36,11 +36,11 @@ enum
 
 // Natives / Functions
 
-native PHY_InitObject(objectid, modelid = 0, Float:mass = 1.0, Float:size = FLOAT_NAN, mode = PHY_MODE_3D);
+native PHY_InitObject(dynamicObjectId, modelid = 0, Float:mass = 1.0, Float:size = FLOAT_NAN, mode = PHY_MODE_3D);
 native PHY_DeleteObject(objectid);
 native PHY_SetObjectVelocity(objectid, Float:vx, Float:vy, Float:vz = 0.0);
 native PHY_GetObjectVelocity(objectid, &Float:vx, &Float:vy, &Float:vz);
-native PHY_GetHandleObject(handleid);
+native PHY_GetDynamicObject(objectid);
 native PHY_SetObjectFriction(objectid, Float:friction);
 native PHY_RollObject(objectid, bool:toggle = true, rollingmode = PHY_ROLLING_MODE_ADVANCED);
 native PHY_SetObjectWorld(objectid, world);
@@ -65,6 +65,10 @@ native PHY_SetUpdateInterval(interval_ms);
 native PHY_CountItems(type);
 native PHY_SetPlayerWorld(playerid, world);
 
+native Float:PHY_GetColSphereRadius(objectmodel);
+native PHY_GetColSphereOffset(objectmodel, &Float:x, &Float:y, &Float:z);
+native PHY_GetColCount();
+
 stock PHY_CreateArea(Float:minX, Float:minY, Float:maxX, Float:maxY, Float:constant = 1.0, Float:low = FLOAT_NEG_INFINITY, Float:high = FLOAT_INFINITY)
 {
 	PHY_CreateWall(minX, minY, minX, maxY, constant, low, high);
@@ -88,10 +92,10 @@ stock PHY_CreateAreaEx(dest_walls[4], Float:minX, Float:minY, Float:maxX, Float:
 
 // Callbacks
 
-forward PHY_OnObjectUpdate(handleid);
-forward PHY_OnObjectCollideWithObject(handleid_a, handleid_b);
-forward PHY_OnObjectCollideWithZBound(handleid, lowhigh); // low bound = 0, high bound = 1
+forward PHY_OnObjectUpdate(objectid);
+forward PHY_OnObjectCollideWithObject(object1, object2);
+forward PHY_OnObjectCollideWithZBound(objectid, lowhigh); // low bound = 0, high bound = 1
 forward PHY_OnObjectCollideWithSAWorld(objectid, Float:cx, Float:cy, Float:cz);
-forward PHY_OnObjectCollideWithWall(handleid, wallid);
-forward PHY_OnObjectCollideWithCylinder(handleid, cylinderid);
-forward PHY_OnObjectCollideWithPlayer(handleid, playerid);
+forward PHY_OnObjectCollideWithWall(objectid, wallid);
+forward PHY_OnObjectCollideWithCylinder(objectid, cylinderid);
+forward PHY_OnObjectCollideWithPlayer(objectid, playerid);

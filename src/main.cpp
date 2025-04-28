@@ -92,7 +92,7 @@ AMX_NATIVE_INFO PluginNatives[] =
 	{"PHY_GetObjectVelocity", Natives::PHY_GetObjectVelocity},
 	{"PHY_DeleteObject", Natives::PHY_DeleteObject},
 	{"PHY_DestroyWall", Natives::PHY_DestroyWall},
-	{"PHY_GetHandleObject", Natives::PHY_GetHandleObject},
+	{"PHY_GetDynamicObject", Natives::PHY_GetDynamicObject},
 	{"PHY_SetObjectFriction", Natives::PHY_SetObjectFriction},
 	{"PHY_RollObject", Natives::PHY_RollObject},
 	{"PHY_SetWallWorld", Natives::PHY_SetWallWorld},
@@ -111,7 +111,10 @@ AMX_NATIVE_INFO PluginNatives[] =
 	{"PHY_SetCylinderWorld", Natives::PHY_SetCylinderWorld},
 	{"PHY_GetObjectSpeed", Natives::PHY_GetObjectSpeed},
 	{"PHY_SetPlayerWorld", Natives::PHY_SetPlayerWorld},
-
+	{"PHY_GetColSphereRadius", Natives::PHY_GetColSphereRadius},
+	{"PHY_GetColSphereOffset", Natives::PHY_GetColSphereOffset},
+	{"PHY_GetColCount", Natives::PHY_GetColCount},
+	
 	{0, 0}
 };
 

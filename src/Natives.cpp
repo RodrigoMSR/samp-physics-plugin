@@ -3,8 +3,9 @@
 #include "Object.hpp"
 #include "util.hpp"
 #include "Streamer.hpp"
+#include "ModelSizes.hpp"
 
-//native PHY_InitObject(objectid, modelid = 0, Float:mass = 1.0, Float:size = FLOAT_NAN, mode = PHY_MODE_3D);
+//native PHY_InitObject(dynamicObjectId, modelid = 0, Float:mass = 1.0, Float:size = FLOAT_NAN, mode = PHY_MODE_3D);
 cell AMX_NATIVE_CALL Natives::PHY_InitObject(AMX* amx, cell* params)
 {
     CHECK_PARAMS(5);
@@ -106,8 +107,8 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectVelocity(AMX* amx, cell* params)
     return 1;
 }
 
-//native PHY_GetHandleObject(handleid);
-cell AMX_NATIVE_CALL Natives::PHY_GetHandleObject(AMX* amx, cell* params)
+//native PHY_GetDynamicObject(objectid);
+cell AMX_NATIVE_CALL Natives::PHY_GetDynamicObject(AMX* amx, cell* params)
 {
     CHECK_PARAMS(1);
 
@@ -440,4 +441,39 @@ cell AMX_NATIVE_CALL Natives::PHY_SetPlayerWorld(AMX* amx, cell* params)
     
     player->setWorld(worldid);
     return 1;
+}
+
+//native Float:PHY_GetColSphereRadius(objectmodel);
+cell AMX_NATIVE_CALL Natives::PHY_GetColSphereRadius(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(1);
+
+    int objectmodel = (int) params[1];
+    float radius = ModelSizes::GetColSphereRadius(objectmodel);
+
+    return amx_ftoc(radius);
+}
+
+//native PHY_GetColSphereOffset(objectmodel, &Float:x, &Float:y, &Float:z);
+cell AMX_NATIVE_CALL Natives::PHY_GetColSphereOffset(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(4);
+
+    int objectmodel, ret;
+    float x, y, z;
+
+    objectmodel = (int) params[1];
+
+    ret = ModelSizes::GetColSphereOffset(objectmodel, x, y, z);
+
+    Util::storeFloatInNative(amx, params[2], x);
+    Util::storeFloatInNative(amx, params[3], y);
+    Util::storeFloatInNative(amx, params[4], z);
+    return ret;
+}
+
+//native PHY_GetColCount();
+cell AMX_NATIVE_CALL Natives::PHY_GetColCount(AMX* amx, cell* params)
+{
+    return ModelSizes::GetColCount();
 }
