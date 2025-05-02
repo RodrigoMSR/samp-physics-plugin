@@ -27,9 +27,9 @@ CMD:throwball(playerid)
 	x += (distance * floatsin(-a, degrees));
 	y += (distance * floatcos(-a, degrees));
 
-	new dynamicObject = CreateDynamicObject(ballModel, x, y, z+0.5, 0.0, 0.0, 0.0);
-	new objectid = PHY_InitObject(dynamicObject, ballModel);
-
+	new objectid = CreateDynamicObject(ballModel, x, y, z+0.5, 0.0, 0.0, 0.0);
+	
+	PHY_InitObject(objectid, ballModel);
 	PHY_SetObjectGravity(objectid, 10.0);
 	PHY_SetObjectZBound(objectid, z-0.85);
 	PHY_RollObject(objectid, true);
@@ -61,7 +61,7 @@ public PHY_OnObjectCollideWithObject(object1, object2)
 PhyObjectPlaySound(objectid, soundid)
 {
 	new Float:x, Float:y, Float:z;
-	GetDynamicObjectPos(PHY_GetDynamicObject(objectid), x, y, z);
+	GetDynamicObjectPos(objectid, x, y, z);
 
 	for(new i = 0; i < MAX_PLAYERS; i++)
 	{
