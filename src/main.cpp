@@ -4,7 +4,7 @@
 #include "Natives.hpp"
 
 #define PLUGIN_NAME "Physics"
-#define PLUGIN_VERSION "1.0"
+#define PLUGIN_VERSION "1.1"
 
 extern void *pAMXFunctions;
 
