@@ -18,10 +18,13 @@ cell AMX_NATIVE_CALL Natives::PHY_InitObject(AMX* amx, cell* params)
     mass = amx_ctof(params[3]);
     size = amx_ctof(params[4]);
     mode = (int) params[5];
-    
-    int id = g_Manager->addObject(Object(objectid, modelid, mass, size, mode));
 
-    return id;
+    if(!Streamer::IsValidDynamicObject(objectid))
+        return 0;
+    
+    g_Manager->addObject(Object(objectid, modelid, mass, size, mode));
+
+    return 1;
 }
 
 //native PHY_CreateWall(Float:x1, Float:y1, Float:x2, Float:y2, Float:constant = 1.0, Float:low = FLOAT_NEG_INFINITY, Float:high = FLOAT_INFINITY);
@@ -105,20 +108,6 @@ cell AMX_NATIVE_CALL Natives::PHY_GetObjectVelocity(AMX* amx, cell* params)
     Util::storeFloatInNative(amx, params[3], object->m_VY);
     Util::storeFloatInNative(amx, params[4], object->m_VZ);
     return 1;
-}
-
-//native PHY_GetDynamicObject(objectid);
-cell AMX_NATIVE_CALL Natives::PHY_GetDynamicObject(AMX* amx, cell* params)
-{
-    CHECK_PARAMS(1);
-
-    int objectid = (int) params[1];
-
-    auto object = g_Manager->findObject(objectid);
-
-    if(object == nullptr) return 0;
-
-    return object->m_DynObject;
 }
 
 //native PHY_SetObjectFriction(objectid, Float:friction);

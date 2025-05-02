@@ -8,7 +8,6 @@ public:
     int m_Id;
     int m_Properties;
     int m_World;
-    int m_DynObject;
     float m_Size;
     float m_Mass;
     float m_VX;

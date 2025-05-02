@@ -3,15 +3,12 @@
 #include "Callbacks.hpp"
 #include "Streamer.hpp"
 #include <cmath>
+#include <list>
+#include <functional>
 
-int Manager::addObject(Object object)
+void Manager::addObject(Object object)
 {
-    int id = m_Identifier[PHY_ITEM_OBJECT].get();
-
-    object.m_Id = id;
-
-    m_Objects.insert(std::make_pair(id, std::shared_ptr<Object>(new Object(object))));
-    return id;
+    m_Objects.insert(std::make_pair(object.m_Id, std::shared_ptr<Object>(new Object(object))));
 }
 
 int Manager::addWall(Wall wall)
@@ -38,7 +35,23 @@ void Manager::deleteItem(int type, int id)
 {
     if(type < 0 || type >= PHY_MAX_ITEM_TYPES) return;
 
-    m_RemoveItems[type].insert(id);
+    int erasedCount = 0;
+
+    switch(type)
+    {
+        case PHY_ITEM_OBJECT:
+            m_Objects.erase(id);
+            break;
+        case PHY_ITEM_WALL:
+            erasedCount = m_Walls.erase(id);
+            break;
+        case PHY_ITEM_CYLINDER:
+            erasedCount = m_Cylinders.erase(id);
+            break;
+    }
+
+    if(erasedCount > 0)
+        m_Identifier[type].remove(id, countItems(type));
 }
 
 std::shared_ptr<Object> Manager::findObject(int id)
@@ -116,35 +129,6 @@ int Manager::countItems(int type)
     return 0;
 }
 
-void Manager::removeMarkedItems()
-{
-    for(int type = 0; type < PHY_MAX_ITEM_TYPES; type++)
-    {
-        for(auto id : m_RemoveItems[type])
-        {
-            int erasedCount = 0;
-
-            switch(type)
-            {
-                case PHY_ITEM_OBJECT:
-                    erasedCount = m_Objects.erase(id);
-                    break;
-                case PHY_ITEM_WALL:
-                    erasedCount = m_Walls.erase(id);
-                    break;
-                case PHY_ITEM_CYLINDER:
-                    erasedCount = m_Cylinders.erase(id);
-                    break;
-            }
-
-            if(erasedCount > 0)
-                m_Identifier[type].remove(id, countItems(type));
-        }
-
-        m_RemoveItems[type].clear();
-    }
-}
-
 void Manager::addPlayer(int playerid)
 {
     m_Players.insert(std::make_pair(playerid, std::shared_ptr<Player>(new Player(playerid))));
@@ -174,13 +158,13 @@ void Manager::update()
 
     float timeMultiplier = (m_UpdateInterval / 1000.0);
     
-    removeMarkedItems();
+    std::list<std::function<void()>> callbacks;
 
 	for(auto& a_it : m_Objects)
 	{
         auto a = a_it.second;
 
-        if(!Streamer::GetDynamicObjectPos(a->m_DynObject, x, y, z))
+        if(!Streamer::GetDynamicObjectPos(a->m_Id, x, y, z))
             continue;
         
         x1 = x + a->m_VX * timeMultiplier;
@@ -195,8 +179,12 @@ void Manager::update()
                 if(a->m_VZ > 0)
                 {
                     a->m_VZ = -a->m_VZ * a->m_BoundConst;
-                    Callbacks::OnObjectCollideWithZBound(a->m_Id, 1);
+
+                    callbacks.push_back([=]() {
+                        Callbacks::OnObjectCollideWithZBound(a->m_Id, 1);
+                    });
                 }
+
                 z1 = a->m_HighZBound;
             }
             else if(z1 < a->m_LowZBound)
@@ -204,8 +192,12 @@ void Manager::update()
                 if(a->m_VZ < 0)
                 {
                     a->m_VZ = -a->m_VZ * a->m_BoundConst;
-                    Callbacks::OnObjectCollideWithZBound(a->m_Id, 0);
+                    
+                    callbacks.push_back([=]() {
+                        Callbacks::OnObjectCollideWithZBound(a->m_Id, 0);
+                    });
                 }
+
                 z1 = a->m_LowZBound;
             }
             
@@ -225,7 +217,7 @@ void Manager::update()
         {
             z1 = z;
         }
-        
+
         if(a->isMoving())
         {
             if(!a->isGhostWithObjects())
@@ -236,7 +228,7 @@ void Manager::update()
 
                     if(a->m_Id != b->m_Id && !b->isGhostWithObjects() && (!a->m_World || !b->m_World || a->m_World == b->m_World))
                     {
-                        if(!Streamer::GetDynamicObjectPos(b->m_DynObject, x2, y2, z2))
+                        if(!Streamer::GetDynamicObjectPos(b->m_Id, x2, y2, z2))
                             continue;
 
                         dx = x1 - x2;
@@ -294,7 +286,9 @@ void Manager::update()
                                 b->m_VY = newvy2;
                                 b->m_VZ = newvz2;
 
-                                Callbacks::OnObjectCollideWithObject(a->m_Id, b->m_Id);
+                                callbacks.push_back([=]() {
+                                    Callbacks::OnObjectCollideWithObject(a->m_Id, b->m_Id);
+                                });
                             }
                         }
                     }
@@ -324,7 +318,9 @@ void Manager::update()
                             x1 = xclosest + (a->m_Size + 0.001) * Util::cos_degrees(angle);
                             y1 = yclosest + (a->m_Size + 0.001) * Util::sin_degrees(angle);
 
-                            Callbacks::OnObjectCollideWithWall(a->m_Id, w->m_Id);
+                            callbacks.push_back([=]() {
+                                Callbacks::OnObjectCollideWithWall(a->m_Id, w->m_Id);
+                            });
                         }
                     }
                 }
@@ -361,7 +357,9 @@ void Manager::update()
                                     a->m_VX = newvx1 * Util::cos_degrees(angle) - newvy1 * Util::sin_degrees(angle);
                                     a->m_VY = newvx1 * Util::sin_degrees(angle) + newvy1 * Util::cos_degrees(angle);
 
-                                    Callbacks::OnObjectCollideWithCylinder(a->m_Id, c->m_Id);
+                                    callbacks.push_back([=]() {
+                                        Callbacks::OnObjectCollideWithCylinder(a->m_Id, c->m_Id);
+                                    });
                                 }
                             }
                         }
@@ -402,7 +400,9 @@ void Manager::update()
                                     a->m_VX = newvx1 * Util::cos_degrees(angle) - newvy1 * Util::sin_degrees(angle);
                                     a->m_VY = newvx1 * Util::sin_degrees(angle) + newvy1 * Util::cos_degrees(angle);
 
-                                    Callbacks::OnObjectCollideWithPlayer(a->m_Id, playerid);
+                                    callbacks.push_back([=]() {
+                                        Callbacks::OnObjectCollideWithPlayer(a->m_Id, playerid);
+                                    });
                                 }
                             }
                         }
@@ -446,8 +446,16 @@ void Manager::update()
         
         if(x1 != x || y1 != y || z1 != z)
         {
-            Streamer::SetDynamicObjectPos(a->m_DynObject, x1, y1, z1);
-            Callbacks::OnObjectUpdate(a->m_Id);
+            Streamer::SetDynamicObjectPos(a->m_Id, x1, y1, z1);
+
+            callbacks.push_back([=]() {
+                Callbacks::OnObjectUpdate(a->m_Id);
+            });
         }
+    }
+
+    for(auto& cb : callbacks)
+    {
+        cb();
     }
 }

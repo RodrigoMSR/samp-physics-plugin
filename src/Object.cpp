@@ -9,10 +9,9 @@ Object::Object(int objectid, int modelid, float mass, float size, int mode)
     float x, y, z;
     Streamer::GetDynamicObjectPos(objectid, x, y, z);
 
-    m_Id = 0;
+    m_Id = objectid;
     m_Properties = PHY_OBJECT_USED | (mode ? PHY_OBJECT_MODE : 0);
     m_World = 0;
-    m_DynObject = objectid;
     m_Mass = mass;
     m_VX = 0;
     m_VY = 0;
@@ -58,7 +57,7 @@ void Object::applyRotation(float speed, float moveangle, int updateInterval)
 {
 	float rx, ry, rz;
 
-	Streamer::GetDynamicObjectRot(m_DynObject, rx, ry, rz);
+	Streamer::GetDynamicObjectRot(m_Id, rx, ry, rz);
 
 	rx -= speed * (updateInterval/1000.0) * (180.0/3.14159) / m_Size;
 
@@ -66,7 +65,7 @@ void Object::applyRotation(float speed, float moveangle, int updateInterval)
 
     rz = moveangle;
 	
-	Streamer::SetDynamicObjectRot(m_DynObject, rx, ry, rz);
+	Streamer::SetDynamicObjectRot(m_Id, rx, ry, rz);
 }
 
 /* New mode of rolling, based on Quaternions */
@@ -94,7 +93,7 @@ void Object::applyQuaternionsRotation(float speed, float moveangle, int updateIn
 	
 	Util::getQuaternionAngles(quat[0], quat[1], quat[2], quat[3], rx, ry, rz);
 	
-	Streamer::SetDynamicObjectRot(m_DynObject, rx, ry, rz);
+	Streamer::SetDynamicObjectRot(m_Id, rx, ry, rz);
 }
 
 float Object::getMoveAngle()
@@ -114,7 +113,7 @@ void Object::toggleRolling(bool toggle, int rollingmode)
         m_Properties |= PHY_OBJECT_ROLLING_MODE;
         
         float rx, ry, rz;
-        Streamer::GetDynamicObjectRot(m_DynObject, rx, ry, rz);
+        Streamer::GetDynamicObjectRot(m_Id, rx, ry, rz);
 
         Util::getRotationQuaternion(rx, ry, rz, m_QW, m_QX, m_QY, m_QZ);
     }

@@ -48,3 +48,12 @@ void Streamer::SetDynamicObjectRot(int objectid, float& rx, float& ry, float& rz
 
     sampgdk::InvokeNative(native, "dfff", objectid, rx, ry, rz);
 }
+
+int Streamer::IsValidDynamicObject(int objectid)
+{
+    AMX_NATIVE native = sampgdk::FindNative("IsValidDynamicObject");
+    
+    if(native == NULL) return 0;
+
+    return sampgdk::InvokeNative(native, "d", objectid);
+}

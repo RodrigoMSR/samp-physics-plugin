@@ -92,7 +92,6 @@ AMX_NATIVE_INFO PluginNatives[] =
 	{"PHY_GetObjectVelocity", Natives::PHY_GetObjectVelocity},
 	{"PHY_DeleteObject", Natives::PHY_DeleteObject},
 	{"PHY_DestroyWall", Natives::PHY_DestroyWall},
-	{"PHY_GetDynamicObject", Natives::PHY_GetDynamicObject},
 	{"PHY_SetObjectFriction", Natives::PHY_SetObjectFriction},
 	{"PHY_RollObject", Natives::PHY_RollObject},
 	{"PHY_SetWallWorld", Natives::PHY_SetWallWorld},

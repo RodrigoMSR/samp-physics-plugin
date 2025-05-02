@@ -17,7 +17,6 @@ namespace Natives
     cell AMX_NATIVE_CALL PHY_GetObjectVelocity(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_DeleteObject(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_DestroyWall(AMX* amx, cell* params);
-    cell AMX_NATIVE_CALL PHY_GetDynamicObject(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_SetObjectFriction(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_RollObject(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_SetWallWorld(AMX* amx, cell* params);

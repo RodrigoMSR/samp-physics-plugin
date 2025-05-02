@@ -40,7 +40,6 @@ native PHY_InitObject(dynamicObjectId, modelid = 0, Float:mass = 1.0, Float:size
 native PHY_DeleteObject(objectid);
 native PHY_SetObjectVelocity(objectid, Float:vx, Float:vy, Float:vz = 0.0);
 native PHY_GetObjectVelocity(objectid, &Float:vx, &Float:vy, &Float:vz);
-native PHY_GetDynamicObject(objectid);
 native PHY_SetObjectFriction(objectid, Float:friction);
 native PHY_RollObject(objectid, bool:toggle = true, rollingmode = PHY_ROLLING_MODE_ADVANCED);
 native PHY_SetObjectWorld(objectid, world);
