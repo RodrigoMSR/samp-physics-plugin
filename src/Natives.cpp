@@ -466,3 +466,20 @@ cell AMX_NATIVE_CALL Natives::PHY_GetColCount(AMX* amx, cell* params)
 {
     return ModelSizes::GetColCount();
 }
+
+//native PHY_UseColAndreas(objectid, mode = PHY_CA_FULL);
+cell AMX_NATIVE_CALL Natives::PHY_UseColAndreas(AMX* amx, cell* params)
+{
+    CHECK_PARAMS(2);
+
+    int objectid, mode;
+
+    objectid = (int) params[1];
+    mode = (int) params[2];
+
+    auto object = g_Manager->findObject(objectid);
+
+    if(object == nullptr) return 0;
+    
+	return object->useColAndreas(mode);
+}

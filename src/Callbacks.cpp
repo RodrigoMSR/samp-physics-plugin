@@ -97,3 +97,22 @@ int Callbacks::OnObjectCollideWithZBound(int objectid, int lowhigh)
 	}
 	return 1;
 }
+
+int Callbacks::OnObjectCollideWithSAWorld(int objectid, float cx, float cy, float cz)
+{
+	int amxIndex = 0;
+
+	for(AMX* a : *g_Interfaces)
+	{
+		if(!amx_FindPublic(a, "PHY_OnObjectCollideWithSAWorld", &amxIndex))
+		{
+			amx_Push(a, amx_ftoc(cz));
+			amx_Push(a, amx_ftoc(cy));
+			amx_Push(a, amx_ftoc(cx));
+			amx_Push(a, (cell)objectid);
+			
+			amx_Exec(a, NULL, amxIndex);
+		}
+	}
+	return 1;
+}

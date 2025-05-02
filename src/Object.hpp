@@ -53,4 +53,6 @@ public:
     bool isRolling();
     bool isRollingModeAdvanced();
     float getSpeed(bool _3D = true);
+    int useColAndreas(int mode);
+    void updateCABounds(float x, float y, float z);
 };

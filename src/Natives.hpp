@@ -38,4 +38,5 @@ namespace Natives
     cell AMX_NATIVE_CALL PHY_GetColSphereRadius(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_GetColSphereOffset(AMX* amx, cell* params);
     cell AMX_NATIVE_CALL PHY_GetColCount(AMX* amx, cell* params);
+    cell AMX_NATIVE_CALL PHY_UseColAndreas(AMX* amx, cell* params);
 }

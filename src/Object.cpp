@@ -2,6 +2,7 @@
 #include "Util.hpp"
 #include "Streamer.hpp"
 #include "ModelSizes.hpp"
+#include "ColAndreas.hpp"
 #include <cmath>
 
 Object::Object(int objectid, int modelid, float mass, float size, int mode)
@@ -180,4 +181,70 @@ float Object::getSpeed(bool _3D)
 		m_VY * m_VY +
 		_3D ? (m_VZ * m_VZ) : 0.0
 	);
+}
+
+int Object::useColAndreas(int mode)
+{
+    if(!ColAndreas::isLoaded()) return 0;
+
+    float x, y, z;
+    Streamer::GetDynamicObjectPos(m_Id, x, y, z);
+
+    switch(mode)
+    {
+        case PHY_CA_NONE:
+        {
+            m_Properties &= ~PHY_OBJECT_COLANDREAS_BOUNDS;
+            m_Properties &= ~PHY_OBJECT_COLANDREAS_COLLS;
+            break;
+        }
+        case PHY_CA_FULL:
+        {
+            m_Properties |= PHY_OBJECT_COLANDREAS_BOUNDS;
+            m_Properties |= PHY_OBJECT_COLANDREAS_COLLS;
+            updateCABounds(x, y, z);
+            break;
+        }
+        case PHY_CA_COLLS:
+        {
+            m_Properties &= ~PHY_OBJECT_COLANDREAS_BOUNDS;
+            m_Properties |= PHY_OBJECT_COLANDREAS_COLLS;
+            break;
+        }
+        case PHY_CA_BOUNDS:
+        {
+            m_Properties |= PHY_OBJECT_COLANDREAS_BOUNDS;
+            m_Properties &= ~PHY_OBJECT_COLANDREAS_COLLS;
+            updateCABounds(x, y, z);
+            break;
+        }
+    }
+    return 1;
+}
+
+void Object::updateCABounds(float x, float y, float z)
+{
+	float unused, bound;
+    int collModel;
+	
+	collModel = ColAndreas::RayCastLine(x, y, z, x, y, z - 1000.0, unused, unused, bound);
+
+	if(collModel != 0)
+    {
+        if(collModel != ColAndreas::WATER_OBJECT)
+        {
+            m_LowZBound = bound + m_Size;
+        }
+        else
+        {
+            m_LowZBound = bound - 0.1;
+        }
+    }
+
+    collModel = ColAndreas::RayCastLine(x, y, z, x, y, z + 1000.0, unused, unused, bound);
+	
+    if(collModel != 0 && collModel != ColAndreas::WATER_OBJECT && bound > m_LowZBound)
+		m_HighZBound = bound - m_Size;
+	else
+		m_HighZBound = FLOAT_INFINITY;
 }

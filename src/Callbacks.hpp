@@ -8,4 +8,5 @@ namespace Callbacks
 	int OnObjectCollideWithPlayer(int objectid, int playerid);
 	int OnObjectCollideWithCylinder(int objectid, int cylinderid);
 	int OnObjectCollideWithZBound(int objectid, int lowhigh);
+	int OnObjectCollideWithSAWorld(int objectid, float cx, float cy, float cz);
 }

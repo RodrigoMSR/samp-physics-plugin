@@ -113,6 +113,7 @@ AMX_NATIVE_INFO PluginNatives[] =
 	{"PHY_GetColSphereRadius", Natives::PHY_GetColSphereRadius},
 	{"PHY_GetColSphereOffset", Natives::PHY_GetColSphereOffset},
 	{"PHY_GetColCount", Natives::PHY_GetColCount},
+	{"PHY_UseColAndreas", Natives::PHY_UseColAndreas},
 	
 	{0, 0}
 };

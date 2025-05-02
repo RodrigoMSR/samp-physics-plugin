@@ -2,6 +2,7 @@
 #include "Util.hpp"
 #include "Callbacks.hpp"
 #include "Streamer.hpp"
+#include "ColAndreas.hpp"
 #include <cmath>
 #include <list>
 #include <functional>
@@ -155,6 +156,9 @@ void Manager::update()
     float mag;
     float tmpvx, tmpvy, tmpvz;
     float newvy1, newvy2, newvx1, newvx2, newvz1, newvz2;
+    float mod;
+    float crx, cry, crz;
+    float cx, cy, cz;
 
     float timeMultiplier = (m_UpdateInterval / 1000.0);
     
@@ -292,6 +296,41 @@ void Manager::update()
                             }
                         }
                     }
+                }
+            }
+
+            if(a->isUsingColAndreasBounds() && a->isUsing3D())
+            {
+                a->updateCABounds(x1, y1, z1);
+            }
+            
+            if(a->isUsingColAndreasCollisions())
+            {
+                mod = sqrt(a->m_VX * a->m_VX + a->m_VY * a->m_VY);
+
+                int collModel = ColAndreas::RayCastLineAngle(
+                    x1, y1, z1,
+                    x1 + a->m_Size * (a->m_VX / mod), y1 + a->m_Size * (a->m_VY / mod), z1,
+                    cx, cy, cz, crx, cry, crz
+                );
+                
+                if(collModel != 0 && collModel != ColAndreas::WATER_OBJECT)
+                {
+                    angle = Util::atan2_degrees(-cry, crx);
+                    newvx1 = (a->m_VX * Util::cos_degrees(angle) - a->m_VY * Util::sin_degrees(angle));
+                    newvy1 = -(a->m_VX * Util::sin_degrees(angle) + a->m_VY * Util::cos_degrees(angle));
+
+                    angle = -angle;
+                    a->m_VX = newvx1 * Util::cos_degrees(angle) - newvy1 * Util::sin_degrees(angle);
+                    a->m_VY = newvx1 * Util::sin_degrees(angle) + newvy1 * Util::cos_degrees(angle);
+                    
+                    angle = angle + (newvy1 > 0 ? 90.0 : -90.0);
+                    x1 = cx + (a->m_Size + 0.001) * Util::cos_degrees(angle);
+                    y1 = cy + (a->m_Size + 0.001) * Util::sin_degrees(angle);
+                    
+                    callbacks.push_back([=]() {
+                        Callbacks::OnObjectCollideWithSAWorld(a->m_Id, cx, cy, cz);
+                    });
                 }
             }
             

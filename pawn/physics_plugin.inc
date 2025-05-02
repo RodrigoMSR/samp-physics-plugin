@@ -15,15 +15,6 @@
 #define PHY_ROLLING_MODE_DEFAULT (0)
 #define PHY_ROLLING_MODE_ADVANCED (1)
 
-enum
-{
-	PHY_ITEM_OBJECT,
-	PHY_ITEM_WALL,
-    PHY_ITEM_CYLINDER,
-
-    PHY_MAX_ITEM_TYPES
-};
-
 #if !defined FLOAT_INFINITY
 	#define FLOAT_INFINITY   (Float:0x7F800000)
 #endif
@@ -33,6 +24,23 @@ enum
 #if !defined FLOAT_NAN
 	#define FLOAT_NAN	 (Float:0xFFFFFFFF)
 #endif
+
+enum
+{
+	PHY_ITEM_OBJECT,
+	PHY_ITEM_WALL,
+    PHY_ITEM_CYLINDER,
+
+    PHY_MAX_ITEM_TYPES
+};
+
+enum
+{
+	PHY_CA_NONE,
+	PHY_CA_FULL,
+	PHY_CA_COLLS,
+	PHY_CA_BOUNDS
+};
 
 // Natives / Functions
 
@@ -51,6 +59,7 @@ native PHY_SetObjectGravity(objectid, Float:gravity);
 native PHY_SetObjectAcceleration(objectid, Float:ax, Float:ay, Float:az = 0.0);
 native PHY_GetObjectAcceleration(objectid, &Float:ax, &Float:ay, &Float:az);
 native PHY_ToggleObjectPlayerColls(objectid, toggle = 1, Float:constant = 1.0, Float:distoffset = 0.8, Float:zoffsetlow = 1.0, Float:zoffsethigh = 1.0);
+native PHY_UseColAndreas(objectid, mode = PHY_CA_FULL);
 
 native PHY_CreateWall(Float:x1, Float:y1, Float:x2, Float:y2, Float:constant = 1.0, Float:low = FLOAT_NEG_INFINITY, Float:high = FLOAT_INFINITY);
 native PHY_DestroyWall(wallid);
