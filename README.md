@@ -1,6 +1,6 @@
 # SA-MP Physics Plugin
 
-This is the plugin version of the [SA-MP Physics include by Peppe](https://github.com/uPeppe/physics.inc). This plugin uses dynamic objects and requires the Streamer plugin.
+This is a plugin version of the [SA-MP Physics include by Peppe](https://github.com/uPeppe/physics.inc). This plugin uses dynamic objects and requires the Streamer plugin.
 
 Advantages of the plugin compared to include:
 - Performance (tested with 320 objects and 100 walls, no impact on the server tick rate).
